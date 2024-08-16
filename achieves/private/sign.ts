@@ -9,7 +9,6 @@ export async function main(
 ): Promise<void> {
 	const { user_id: userID, raw_message: idMsg } = messageData;
 	const info: Private | string = await getPrivateAccount( userID, idMsg, auth );
-	console.log(info)
 	if ( typeof info === "string" ) {
 		await sendMessage( info );
 		return;
