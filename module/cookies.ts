@@ -14,7 +14,7 @@ export class Cookies {
 	}
 	
 	constructor() {
-		this.cookies = bot.file.loadYAML( "cookies" ).cookies;
+		this.cookies = bot.file.loadYAMLSync( "cookies" ).cookies;
 		this.index = 0;
 		this.length = this.cookies.length;
 	}

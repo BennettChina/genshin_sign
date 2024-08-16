@@ -1,6 +1,7 @@
 import Adachi from "ROOT";
-import { scheduleJob } from "node-schedule";
-import { userGameRolesPromise, hasSignPromise, signPromise } from "../utils/promise";
+import {scheduleJob} from "node-schedule";
+import {hasSignPromise, signPromise, userGameRolesPromise} from "../utils/promise";
+import {UserGameRolesData} from "#/genshin_sign/utils/resultObjectType";
 import {Cookies} from "./cookies";
 import {SignConfig} from "./config";
 
@@ -20,10 +21,12 @@ export class SignClass {
 	
 	public async sign(sendMessage, cookies): Promise<void> {
 		const cookieList = cookies ? cookies : this.cookies.getCookies();
+		let users:UserGameRolesData[] | undefined
+		// 用户数量
+		let userIndex:number=0;
 		for (const cookie of cookieList) {
-			let users;
 			try {
-				users = await userGameRolesPromise(cookie);
+				users = await userGameRolesPromise(cookie) as UserGameRolesData[];
 			} catch (error) {
 				if (error !== "gotten") {
 					sendMessage ? await sendMessage(error as string) : await Adachi.client.sendPrivateMsg( Adachi.config.master, error as string );
@@ -31,11 +34,12 @@ export class SignClass {
 				}
 			}
 			Adachi.logger.info("绑定角色信息：" + JSON.stringify(users));
-			for (const item of users) {
+			for (const item of <UserGameRolesData[]>users) {
 				try {
-					Adachi.logger.info(item);
+					Adachi.logger.info(`第${userIndex}位绑定角色信息：`,item);
 					const signResult = await hasSignPromise(item.game_uid, item.region, cookie);
-	
+					
+					console.log(signResult)
 					Adachi.logger.info("查询是否签到信息：" + JSON.stringify(signResult));
 	
 					if (signResult.is_sign) {
@@ -58,6 +62,8 @@ export class SignClass {
 					}
 				}
 			}
+			userIndex++
 		}
+		userIndex=0;
 	}
 }

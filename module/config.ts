@@ -12,7 +12,7 @@ export class SignConfig {
 	};
 	
 	constructor( file: FileManagement ) {
-		const config = file.loadYAML( "genshin_sign" );
+		const config = file.loadYAMLSync( "genshin_sign" );
 		
 		this.openTiming = config.openTiming;
 		this.cron = config.cron;

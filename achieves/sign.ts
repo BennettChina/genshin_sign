@@ -1,10 +1,20 @@
-import { InputParameter } from "@modules/command";
-import { signClass } from "../init";
-
+import {InputParameter} from "@/modules/command";
+import {signClass} from "../../init";
+import {getPrivateAccount} from "#/genshin/utils/private";
+import {Private} from "#/genshin/module/private/main";
 
 
 export async function main(
-	{ sendMessage }: InputParameter
+	{ sendMessage, messageData, auth }: InputParameter
 ): Promise<void> {
-	await signClass.sign(sendMessage, null);
+	const { user_id: userID, raw_message: idMsg } = messageData;
+	const info: Private | string = await getPrivateAccount( userID, idMsg, auth );
+	console.log(info)
+	if ( typeof info === "string" ) {
+		await sendMessage( info );
+		return;
+	}
+
+	const { cookie } = info.setting;
+	await signClass.sign(sendMessage, [cookie]);
 }

@@ -1,6 +1,7 @@
 import * as api from "./api";
-import { cookies } from "../init";
-import { Cookies } from "#genshin_sign/module/cookies";
+import {cookies} from "../init";
+import {Cookies} from "../module/cookies";
+import {SignResult, UserGameRolesData} from "#/genshin_sign/utils/resultObjectType";
 
 export enum ErrorMsg {
 	NOT_FOUND = "未查询到角色数据，请检查米哈游通行证（非UID）是否有误或是否设置角色信息公开",
@@ -8,26 +9,13 @@ export enum ErrorMsg {
 	FORM_MESSAGE = "米游社接口报错: "
 }
 
-type SignResult = {
-	total_sign_day: number,
-	today: string,
-	is_sign: boolean,
-	first_bind: boolean
-};
-
-type UserGameRolesData = {
-	region: string,
-	game_biz: string,
-	game_uid: number,
-	nickname: string,
-	level: number,
-	is_chosen: string,
-	region_name: string,
-	is_official: string
-};
-
-
-export async function signPromise( uid: number, region: string, cookie: string): Promise<object> {
+/**
+ * 进行签到
+ * @param uid
+ * @param region
+ * @param cookie
+ */
+export async function signPromise( uid: string, region: string, cookie: string): Promise<object> {
 	const { retcode, message, data } = await api.sign( uid, region, cookie ? cookie : cookies.get() );
 	
 	return new Promise( async ( resolve, reject ) => {
@@ -47,7 +35,13 @@ export async function signPromise( uid: number, region: string, cookie: string):
 	} );
 }
 
-export async function hasSignPromise( uid: number, region: string, cookie: string): Promise<SignResult> {
+/**
+ * 获取签到信息
+ * @param uid
+ * @param region
+ * @param cookie
+ */
+export async function hasSignPromise( uid: string, region: string, cookie: string): Promise<SignResult> {
 	const { retcode, message, data } = await api.getHasSign( uid, region, cookie ? cookie : cookies.get() );
 	
 	return new Promise( async ( resolve, reject ) => {
@@ -64,6 +58,10 @@ export async function hasSignPromise( uid: number, region: string, cookie: strin
 	} );
 }
 
+/**
+ * 获取角色数据
+ * @param cookie
+ */
 export async function userGameRolesPromise(cookie: string): Promise<UserGameRolesData[]> {
 	const { retcode, message, data } = await api.getUserGameRolesByCookie( cookie ? cookie : cookies.get() );
 	
