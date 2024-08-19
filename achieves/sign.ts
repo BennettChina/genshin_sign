@@ -1,6 +1,5 @@
-import { InputParameter } from "@modules/command";
-import { signClass } from "../init";
-
+import {InputParameter} from "@/modules/command";
+import {signClass} from "../init";
 
 
 export async function main(

@@ -1,8 +1,7 @@
-import { InputParameter } from "@modules/command";
-import { signClass } from "../../init";
-import { getPrivateAccount } from "#genshin/utils/private";
-import { Private } from "#genshin/module/private/main";
-
+import {InputParameter} from "@/modules/command";
+import {signClass} from "../../init";
+import {getPrivateAccount} from "#/genshin/utils/private";
+import {Private} from "#/genshin/module/private/main";
 
 
 export async function main(
@@ -14,7 +13,7 @@ export async function main(
 		await sendMessage( info );
 		return;
 	}
-	
+
 	const { cookie } = info.setting;
 	await signClass.sign(sendMessage, [cookie]);
 }
